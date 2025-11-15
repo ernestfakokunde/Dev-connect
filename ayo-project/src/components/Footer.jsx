@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const sections = [
@@ -32,16 +33,31 @@ const Footer = () => {
               {section.title}
             </h3>
             <ul className="space-y-2">
-              {section.links.map((link, i) => (
-                <li key={i}>
-                  <a
-                    href="#"
-                    className="text-white/70 hover:text-[var(--color-text-strong)] transition-colors"
-                  >
-                    {link}
-                  </a>
-                </li>
-              ))}
+              {section.links.map((link, i) => {
+                const linkMap = {
+                  'Terms of Service': '/terms',
+                  'Privacy Policy': '/privacy',
+                  'Cookie Policy': '/cookies',
+                  'Compliance': '/compliance',
+                  'Documentation': '/docs',
+                  'Community': '/community',
+                  'Marketplace': '/checkout',
+                };
+                const to = linkMap[link] || null;
+                return (
+                  <li key={i}>
+                    {to ? (
+                      <Link to={to} className="text-white/70 hover:text-[var(--color-text-strong)] transition-colors">
+                        {link}
+                      </Link>
+                    ) : (
+                      <a href="#" className="text-white/70 hover:text-[var(--color-text-strong)] transition-colors">
+                        {link}
+                      </a>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}

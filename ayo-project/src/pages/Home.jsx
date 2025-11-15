@@ -9,8 +9,12 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+
+  const navigate = useNavigate()
+
   const {user,token}= useGlobalContext();
   const [loading, setLoading] = React.useState(false);
   const handlePayment = async()=>{
@@ -60,13 +64,13 @@ const Home = () => {
      <section className='relative max-w-7xl mx-auto px-6 md:px-10 mt-16'>
          <div className='rounded-2xl bg-[rgba(28,37,65,0.6)] border border-white/10 shadow-soft p-10 md:p-14 grid md:grid-cols-2 gap-10 items-center'>
            <div className=''>
-             <h1 className='text-4xl md:text-6xl font-extrabold leading-tight text-[var(--color-text-strong)]'>Connect and Scale semalessly</h1>
-             <h2 className='mt-4 text-lg md:text-xl text-[var(--color-text)]'>Connect. Create. Scale your marketplace in minutes.</h2>
+             <h1 className='text-4xl md:text-6xl font-extrabold leading-tight text-[var(--color-text-strong)]'>Connect and Scale seamlessly</h1>
+             <h2 className='mt-4 text-lg md:text-xl text-[var(--color-text)]'>Connect. Create. Scale your projects in minutes.</h2>
              <p className='mt-4 text-sm md:text-base text-white/70 max-w-xl'>A unified platform for developers to connect, collaborate, and create together. Whether you're a seasoned pro or just starting out, our community is here to support you.</p>
 
              <div className='flex gap-4 mt-6'>
-               <button className='btn-gradient text-white px-6 py-3 rounded-full font-semibold shadow-soft hover:opacity-95 transition'>Get Started</button>
-               <button className='bg-transparent border border-white/20 text-white px-6 py-3 rounded-full font-semibold hover:border-white/40 transition'>Learn More</button>
+               <button className='btn-gradient text-white px-6 py-3 rounded-full font-semibold shadow-soft hover:opacity-95 transition' onClick={()=> navigate("/feed")}>Get Started</button>
+               <button className='bg-transparent border border-white/20 text-white px-6 py-3 rounded-full font-semibold hover:border-white/40 transition' onClick={()=> navigate("/resources")}>Learn More</button>
              </div>
            </div>
           
@@ -113,7 +117,6 @@ const Home = () => {
     ))}
   </div>
 </section>
-      <Marketplace />
       <main className='flex flex-col text-center align-center'>
           <h2 className='font-bold text-4xl text-[var(--color-text-strong)]'>Join Popular groups</h2>
           <p className='text-center mt-3 max-w-[700px] mx-auto text-white/70 text-1xl md:text-2xl '>

@@ -12,6 +12,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { GrResources } from "react-icons/gr";
 import { IoChatbox } from "react-icons/io5"; 
 import { useGlobalContext } from '../context/context';
+import { FaHome } from "react-icons/fa";
 const Navbar = () => {
 
   const {setSearchQuery , cartQuantity, user, logout } = useGlobalContext();
@@ -21,10 +22,10 @@ const Navbar = () => {
         <div className='max-w-7xl mx-auto px-4 py-3 flex items-center justify-between'>
           {/* Logo */}
           <Link to='/' className='flex items-center gap-2'>
-            <div className='h-9 w-9 rounded-xl bg-[var(--color-accent)] grid place-items-center shadow-soft'>
+            <div className='h-9 w-9 rounded-xl bg-[var(--color-accent)] grid place-items-center shadow-soft '>
               <span className='text-[var(--color-text-strong)] font-bold'>DC</span>
             </div>
-            <span className='text-lg font-semibold text-[var(--color-text-strong)]'>DevConnect</span>
+            <span className=' hidden md:flex lg:flex text-lg font-semibold text-[var(--color-text-strong)]'>DevConnect</span>
           </Link>
 
           {/* Nav links */}
@@ -37,20 +38,16 @@ const Navbar = () => {
 
           {/* Search + Icons */}
           <div className='flex items-center gap-4'>
-            <div className='relative hidden sm:block'>
-              <FaSearch className='absolute left-3 top-1/2 -translate-y-1/2 text-white/50' />
-              <input
-                className='bg-[rgba(28,37,65,0.8)] text-white text-sm rounded-full pl-9 pr-4 py-2 border border-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] placeholder:text-white/50'
-                type="text"
-                onChange={(e)=> setSearchQuery(e.target.value)}
-                placeholder='Search items...'/>
-            </div>
+           
             {user ? (
               <>
-                
+                 <Link to='/' className='text-white hover:text-[var(--color-accent)] transition'>
+                  <FaHome className='text-2xl' />
+                </Link>
                 <Link to='/community' className='text-white hover:text-[var(--color-accent)] transition'>
                   <CgCommunity className='text-2xl' />
                 </Link>
+                
                 <Link to='/feed' className='text-[var(--color-text)] hover:text-[var(--color-text-strong)] transition'><IoChatbox /></Link>
                 <Link to='/resources' className='text-white hover:text-[var(--color-accent)] transition'>
                   <GrResources className='text-2xl' />

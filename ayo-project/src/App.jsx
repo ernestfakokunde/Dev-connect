@@ -10,6 +10,11 @@
  import Login from './pages/Login'
  import Register from './pages/Register'
  import Resources from './pages/Resources'
+import TermsOfService from './pages/TermsOfService'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+import Documentation from './pages/Documentation'
+import CookiePolicy from './pages/CookiePolicy'
+import Compliance from './pages/Compliance'
  import ProtectedRoute from './protectedRoutes/protectedRoutes'
  import ProfileSetup from './pages/profile/ProfileSetup'
  import PaymentCallback from './pages/PaymentCallback';
@@ -104,6 +109,13 @@ import ProfileSetupRoute from './protectedRoutes/ProfileSetupRoute'
             </ProtectedRoute>
           }></Route>
           <Route path='/payment/callback' element={<PaymentCallback />} />
+
+          {/* Legal & Docs pages (public) */}
+          <Route path='/terms' element={<TermsOfService />} />
+          <Route path='/privacy' element={<PrivacyPolicy />} />
+          <Route path='/docs' element={<Documentation />} />
+          <Route path='/cookies' element={<CookiePolicy />} />
+          <Route path='/compliance' element={<Compliance />} />
         </Routes>
     
         {/*toast container */}

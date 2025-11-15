@@ -1,5 +1,6 @@
 import React from "react";
-
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 const groups = [
   {
     id: 1,
@@ -35,11 +36,22 @@ const groups = [
   },
 ];
 
+
+
 const Groups = () => {
+  const navigate = useNavigate();
+
+  const handleJoinGroup = () => {
+    navigate('/feed');
+  };
+
+  const handleViewEvents = () => {
+    navigate('/messages');
+  };
   return (
-    <section className="max-w-6xl mx-auto p-6 mt-10">
+    <section className="max-w-6xl mx-auto p-6 items-center mt-12">
       <h2 className="text-3xl font-bold text-center text-white mb-6">
-        Popular Developer Groups
+        Popular Developer Groups ( Soon )
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -61,10 +73,10 @@ const Groups = () => {
             <p className="text-white/90 text-sm mb-4">{group.description}</p>
 
             <div className="flex gap-3 justify-between">
-              <button className="btn-gradient text-white font-semibold text-sm px-4 py-2 rounded-full hover:opacity-90 transition">
+              <button onClick={handleJoinGroup} className="btn-gradient text-white font-semibold text-sm px-4 py-2 rounded-full hover:opacity-90 transition">
                 Join Group
               </button>
-              <button className="border border-white/20 text-white font-semibold text-sm px-4 py-2 rounded-full hover:border-white/40 transition">
+              <button onClick={handleViewEvents} className="border border-white/20 text-white font-semibold text-sm px-4 py-2 rounded-full hover:border-white/40 transition">
                 View Events
               </button>
             </div>

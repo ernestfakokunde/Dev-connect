@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Navbar from '../components/Navbar';
 import '../styles/Resources.css';
-
+import Footer from '../components/Footer';
 const Resources = () => {
   const [activeTab, setActiveTab] = useState('features');
 
@@ -257,6 +257,7 @@ const Resources = () => {
           </div>
         </section>
       </div>
+      <Footer />
     </>
   )
 }
