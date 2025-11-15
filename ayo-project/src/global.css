@@ -1,0 +1,83 @@
+:root{
+	--primary:  bg-[rgba(28,37,65,0.6)] ; /* Facebook-like blue */
+	--bg: #f0f2f5;
+	--card: #ffffff;
+	--muted: #6b7280;
+	--border: #e6e8eb;
+	--shadow: 0 6px 18px rgba(20,20,40,0.06);
+	--radius: 10px;
+}
+
+*{box-sizing:border-box}
+/* Keep global font but avoid setting body background/color here so theme in `index.css` can take precedence */
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial; margin:0}
+
+/* Reusable components */
+.container{max-width:1100px;margin:0 auto;padding:20px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border)}
+.btn{padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff;border:none}
+
+/* Users strip (horizontal avatars) */
+.users-strip{display:flex;gap:12px;overflow-x:auto;padding:10px;background:var(--card);border-radius:10px}
+.user-tile{text-align:center;width:72px;flex:0 0 auto;cursor:pointer}
+.avatar{width:56px;height:56px;border-radius:50%;overflow:hidden;position:relative;border:1px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.online-dot{position:absolute;right:6px;bottom:6px;width:12px;height:12px;border-radius:50%;border:2px solid var(--card);background:#2ecc71}
+.online-dot.off{background:#dcdcdc}
+.user-name{font-size:12px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#111}
+
+/* Search and list */
+.search-input{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:#fff}
+.list{max-height:58vh;overflow-y:auto;margin-top:8px;background:var(--card);border-radius:10px}
+.user-row{display:flex;align-items:center;padding:10px;cursor:pointer;border-bottom:1px solid #f5f6f7}
+.user-row.selected{background:#f7f9fb}
+.avatar-sm{width:44px;height:44px;border-radius:50%;overflow:hidden;margin-right:10px;position:relative;border:1px solid var(--border)}
+.username-main{font-weight:600;color:#111}
+.muted{color:var(--muted);font-size:13px}
+
+/* small responsive tweaks */
+@media (max-width:720px){
+	.users-strip{padding:8px}
+	.user-tile{width:64px}
+}
+
+/* Messages / Chat page layout */
+.messages-layout{display:flex;height:100vh;background:var(--bg)}
+.left-column{width:360px;border-right:1px solid var(--border);padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--card)}
+.right-column{flex:1;display:flex;flex-direction:column;background:var(--card)}
+.chat-header{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid #f5f6f7}
+.chat-header .title{font-weight:700}
+.chat-search{padding:10px;border-radius:20px;background:#f3f4f6;border:1px solid transparent}
+.conversations{overflow:auto}
+.conversation-row{display:flex;align-items:center;padding:12px;gap:12px;border-radius:8px;cursor:pointer}
+.conversation-row:hover{background:#fafbff}
+.conversation-row.selected{background:#f5f7fb}
+.conv-name{font-weight:700}
+.conv-snippet{color:var(--muted);font-size:13px}
+.conv-time{color:#9ca3af;font-size:12px}
+.unread-badge{background:var(--primary);color:#fff;padding:6px 8px;border-radius:12px;font-size:12px}
+
+/* Chat bubbles */
+.chat-body{flex:1;padding:24px;overflow:auto;background:#fbfdff}
+.bubble{display:inline-block;padding:14px;border-radius:18px;line-height:1.4;max-width:70%;box-shadow:0 6px 18px rgba(21,126,251,0.06)}
+.bubble--them{background:#eef2f6;color:#111;border-radius:18px 18px 18px 6px}
+.bubble--me{background:var(--primary);color:#fff;border-radius:18px 18px 6px 18px}
+.message-row{margin-bottom:18px;display:flex}
+.message-row.me{justify-content:flex-end}
+.message-time{font-size:11px;color:#9ca3af;margin-top:6px;text-align:right}
+
+/* Chat composer */
+.composer{display:flex;gap:12px;padding:12px;border-top:1px solid #f0f0f0;align-items:center}
+.composer .input{flex:1;padding:12px;border-radius:22px;border:1px solid var(--border);background:#fff;color:#000}
+.composer .send{padding:10px 16px;border-radius:22px;border:none;background:var(--primary);color:#fff;cursor:pointer}
+
+/* Connections tweaks */
+.connections-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.connection-card{padding:24px;text-align:center}
+.connection-card .big-avatar{width:100px;height:100px;border-radius:50%;overflow:hidden;margin:0 auto 12px}
+.connection-card .big-avatar img{width:100%;height:100%;object-fit:cover}
+.connection-actions{display:flex;gap:10px;justify-content:center;margin-top:16px}
+.btn-light{background:#f3f4f6;border-radius:10px;padding:8px 14px;border:1px solid var(--border);cursor:pointer}
+
+
