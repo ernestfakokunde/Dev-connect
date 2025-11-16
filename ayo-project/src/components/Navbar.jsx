@@ -13,6 +13,7 @@ import { GrResources } from "react-icons/gr";
 import { IoChatbox } from "react-icons/io5"; 
 import { useGlobalContext } from '../context/context';
 import { FaHome } from "react-icons/fa";
+import { getImageUrl } from '../utils/imageUtils';
 const Navbar = () => {
 
   const {setSearchQuery , cartQuantity, user, logout } = useGlobalContext();
@@ -55,9 +56,10 @@ const Navbar = () => {
                 {user?.profilePic && (
                   <Link to='/profile' className='shrink-0'>
                     <img
-                      src={user.profilePic}
+                      src={getImageUrl(user.profilePic)}
                       alt={user?.username || 'Profile'}
                       className='w-8 h-8 rounded-full object-cover border border-white/20'
+                      onError={(e) => {e.target.src = '/default-avatar.png'}}
                     />
                   </Link>
                 )}

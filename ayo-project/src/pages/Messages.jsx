@@ -44,7 +44,7 @@ const Messages = () => {
     
     // Initialize socket connection
     if (user && token) {
-      socketRef.current = io('http://localhost:5000', {
+      socketRef.current = io(import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000', {
         auth: { token },
       });
 
@@ -164,7 +164,7 @@ const Messages = () => {
       : conversation.sender;
   };
 
-  const baseURL = 'http://localhost:5000';
+  const baseURL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000';
   const getImageUrl = (img) => {
     if (!img) return '/default-avatar.png';
     if (img.startsWith('http')) return img;

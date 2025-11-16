@@ -5,6 +5,7 @@ import { FaHome, FaUserFriends, FaUser } from 'react-icons/fa';
 import { FaMessage } from 'react-icons/fa6';
 import { MdNotificationsNone } from 'react-icons/md';
 import { RiUserCommunityLine } from "react-icons/ri";
+import { getImageUrl } from '../utils/imageUtils';
 
 const FacebookNavbar = () => {
   const { user, logout } = useGlobalContext();
@@ -76,9 +77,10 @@ const FacebookNavbar = () => {
                 >
                   {user.profilePic ? (
                     <img
-                      src={user.profilePic}
+                      src={getImageUrl(user.profilePic)}
                       alt={user.username || 'Profile'}
                       className="w-8 h-8 rounded-full object-cover border-2 border-white"
+                      onError={(e) => {e.target.src = '/default-avatar.png'}}
                     />
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">

@@ -7,6 +7,7 @@ import ProjectModal from '../components/ProjectModal';
 import axiosInstance from '../api/axiosInstance';
 import { useGlobalContext } from '../context/context';
 import { toast } from 'react-toastify';
+import { getImageUrl } from '../utils/imageUtils';
 
 const Community = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -119,7 +120,7 @@ const Community = () => {
                 {/* Project Image */}
                 {project.image && (
                   <img
-                    src={`http://localhost:5000${project.image}`}
+                    src={getImageUrl(project.image)}
                     alt={project.projectName}
                     className="w-full h-48 object-cover"
                   />
@@ -142,7 +143,7 @@ const Community = () => {
                   {/* Owner Info */}
                   <div className="flex items-center gap-2 py-2">
                     <img
-                      src={`http://localhost:5000${project.owner?.profilePic || '/default-avatar.png'}`}
+                      src={getImageUrl(project.owner?.profilePic)}
                       alt={project.owner?.username}
                       className="w-8 h-8 rounded-full object-cover"
                     />

@@ -149,7 +149,7 @@ const Friends = () => {
     return senderIdStr === currentUserId ? request.receiver : request.sender;
   };
 
-  const baseURL = 'http://localhost:5000';
+  const baseURL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000';
   const getImageUrl = (img) => {
     if (!img) return '/default-avatar.png';
     if (img.startsWith('http')) return img;

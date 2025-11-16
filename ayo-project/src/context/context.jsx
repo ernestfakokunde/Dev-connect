@@ -1,8 +1,9 @@
 import { Children, createContext, useContext,useEffect,useState } from "react";
 import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
-// Configure axios base URL
-axios.defaults.baseURL = 'http://localhost:5000';
+// Use axiosInstance from centralized config
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 
 const GlobalContext = createContext();
@@ -17,10 +18,15 @@ export const GlobalProvider = ({children})=>{
 
   const normalizeUser = (rawUser)=>{
     if(!rawUser || typeof rawUser !== 'object') return rawUser;
-    const baseURL = axios.defaults.baseURL || '';
+    // Get the full API base URL (with /api)
+    const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
     const profilePic = rawUser.profilePic;
+    
+    // If profilePic starts with /, prepend the base URL minus /api to get just the domain
+    // e.g., /uploads/123.jpg -> http://localhost:5000/uploads/123.jpg
     if(profilePic && typeof profilePic === 'string' && profilePic.startsWith('/')){
-      return { ...rawUser, profilePic: `${baseURL}${profilePic}` };
+      const domainUrl = baseURL.replace('/api', '');
+      return { ...rawUser, profilePic: `${domainUrl}${profilePic}` };
     }
     return rawUser;
   }
@@ -29,7 +35,7 @@ export const GlobalProvider = ({children})=>{
   useEffect(()=>{
     if(token){
       setLoading(true)
-      axios.get("/api/users/me",{headers:{Authorization:`Bearer ${token}`}})
+      axiosInstance.get("/users/me",{headers:{Authorization:`Bearer ${token}`}})
       .then(res => setUser(normalizeUser(res.data)))
       .catch((err)=>{
         setToken('');
@@ -46,13 +52,13 @@ export const GlobalProvider = ({children})=>{
   const login = async (email,password)=>{
     setLoading(true)
     try {
-      const res = await axios.post('/api/users/login', {email,password});
+      const res = await axiosInstance.post('/users/login', {email,password});
       const { token } = res.data;
       setToken(token)
       localStorage.setItem('token',token)
       
       // Fetch full user profile after login
-      const userRes = await axios.get("/api/users/me", {headers: {Authorization: `Bearer ${token}`}});
+      const userRes = await axiosInstance.get("/users/me", {headers: {Authorization: `Bearer ${token}`}});
       setUser(normalizeUser(userRes.data));
       
       return true;
@@ -70,13 +76,13 @@ export const GlobalProvider = ({children})=>{
    const register = async (formData)=>{
     setLoading(true)
     try {
-      const res = await axios.post("/api/users/register", formData);
+      const res = await axiosInstance.post("/users/register", formData);
       const { token } = res.data;
       setToken(token);
       localStorage.setItem("token", token);
       
       // Fetch full user profile after registration
-      const userRes = await axios.get("/api/users/me", {headers: {Authorization: `Bearer ${token}`}});
+      const userRes = await axiosInstance.get("/users/me", {headers: {Authorization: `Bearer ${token}`}});
       setUser(normalizeUser(userRes.data));
       
       return true;
@@ -116,21 +122,17 @@ export const GlobalProvider = ({children})=>{
       data.append("gender", formData.gender || "");
       if(formData.profilePic) data.append("profilePic", formData.profilePic);
 
-      const baseURL = axios.defaults.baseURL || 'http://localhost:5000';
-      const res = await fetch(`${baseURL}/api/users/profile`,{
-        method:"PATCH",
+      const res = await axiosInstance.patch('/users/profile', data, {
         headers:{
-          Authorization:`Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
-        body:data,
-      })
+      });
 
-      const result = await res.json();
-      if(result.success){
-        setUser(normalizeUser(result.user))
-        return result.user;
+      if(res.data.success){
+        setUser(normalizeUser(res.data.user))
+        return res.data.user;
       }else{
-        throw new Error(result.message || "Profile update failed");
+        throw new Error(res.data.message || "Profile update failed");
       }
     } catch (error) {
       console.error("Profile update error:", error)

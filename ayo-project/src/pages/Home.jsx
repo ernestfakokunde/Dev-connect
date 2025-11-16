@@ -21,7 +21,7 @@ const Home = () => {
     setLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/users/initializePayment",
+        `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'}/users/initializePayment`,
         {email:user.email,amount:5000},
         {headers:{Authorization:`Bearer ${token}`}}
       )
