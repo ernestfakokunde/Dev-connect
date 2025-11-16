@@ -7,10 +7,7 @@ import  {sendMessage, getConversations, getMessages, getSharedMedia} from  "../c
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: "uploads/messageUploads/",
-  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
-});
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // POST /api/messages/send - send message

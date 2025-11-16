@@ -1,5 +1,6 @@
  import mongoose from "mongoose";
 import Message from "../models/messageModel.js";
+import uploadBuffer from '../utils/cloudinaryUpload.js'
 import User from "../models/userModel.js";
 
 // SEND MESSAGE
@@ -9,11 +10,18 @@ export const sendMessage = async (req, res) => {
     const { receiverId, text } = req.body;
     if (!receiverId) return res.status(400).json({ message: "Receiver required" });
 
-    const images = (req.files || []).map(f => {
-      const path = f.path.replace(/\\/g, "/");
-      // Ensure path starts with /uploads/
-      return path.startsWith("/") ? path : `/${path}`;
-    });
+    let images = [];
+    if (req.files && req.files.length > 0) {
+      for (const f of req.files) {
+        if (f.buffer) {
+          const res = await uploadBuffer(f.buffer, 'dev-connect/messages');
+          images.push(res.secure_url || res.url);
+        } else if (f.path || f.filename) {
+          const p = (f.path || f.filename).replace(/\\/g, "/");
+          images.push(p.startsWith("/") ? p : `/${p}`);
+        }
+      }
+    }
     const message = await Message.create({ sender, receiver: receiverId, text, images });
 
     await message.populate("sender", "username profilePic");

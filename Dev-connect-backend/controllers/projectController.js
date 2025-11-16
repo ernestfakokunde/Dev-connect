@@ -1,10 +1,19 @@
 import projectSchema from "../models/projectModel.js";
 import User from "../models/userModel.js";
+import uploadBuffer from '../utils/cloudinaryUpload.js'
 
 export const createProject = async (req,res)=>{
   try {
     const { title, description, experienceLevel, telegram, whatsapp, discord } = req.body;
-    const image = req.file ? `/uploads/projects/${req.file.filename}` : "";
+    let image = '';
+    if (req.file) {
+      if (req.file.buffer) {
+        const res = await uploadBuffer(req.file.buffer, 'dev-connect/projects');
+        image = res.secure_url || res.url;
+      } else if (req.file.filename) {
+        image = `/uploads/projects/${req.file.filename}`;
+      }
+    }
 
     if(!title || !description || !experienceLevel){
       return res.status(400).json({ message:" All required fields must be filled." });

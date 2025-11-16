@@ -4,16 +4,13 @@ import { registerUser,loginUser,getUser, initializePayment, verifyPayment } from
 import { protect } from '../middleware/middleware.js'
 import multer from "multer"
 import path from "path"
+import streamifier from 'streamifier'
+import cloudinary from '../config/cloudinaryConfig.js'
 import { verify } from 'crypto';
 const router = express.Router();
 
-//set up multer for image upload
-
-const storage = multer.diskStorage({
-  destination:(req, file, cb )=> cb(null, "uploads/",),
-  filename:(req, file, cb)=>
-    cb(null, Date.now() + path.extname(file.originalname)),
-});
+// set up multer for image upload (memory storage for Cloudinary)
+const storage = multer.memoryStorage();
 
 // List all users (simple suggestions endpoint) - protected so we can filter based on relations
 router.get('/all', protect, async (req, res) => {
@@ -56,9 +53,24 @@ router.patch("/profile", protect, upload.single("profilePic"), async(req,res)=>{
     if(req.body.gender !== undefined) user.gender = req.body.gender;
     if(req.body.bio !== undefined) user.bio = req.body.bio;
 
-    // Update profile picture if provided
-    if(req.file){
-      user.profilePic = `/uploads/${req.file.filename}`;
+    // Update profile picture if provided - upload to Cloudinary
+    if (req.file) {
+      try {
+        const buffer = req.file.buffer;
+        const uploadResult = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream({ folder: 'dev-connect/profiles' }, (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          });
+          streamifier.createReadStream(buffer).pipe(stream);
+        });
+
+        // Store the secure URL returned by Cloudinary
+        user.profilePic = uploadResult.secure_url || uploadResult.url;
+      } catch (err) {
+        console.error('Cloudinary upload error:', err);
+        return res.status(500).json({ success: false, message: 'Image upload failed', error: err.message });
+      }
     }
 
     // Mark profile as completed if profileName is set

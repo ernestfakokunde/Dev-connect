@@ -1,4 +1,5 @@
 import Post from "../models/postModels.js";
+import uploadBuffer from '../utils/cloudinaryUpload.js'
 
 export const createPost = async(req,res)=>{
   try {
@@ -17,13 +18,34 @@ export const createPost = async(req,res)=>{
 
     // multer.fields() stores files in req.files as object with arrays
     if (req.files) {
-      if (Array.isArray(req.files)) {
-        images = req.files.map((f) => `/uploads/postUploads/${f.filename}`);
-      } else if (req.files.images && Array.isArray(req.files.images)) {
-        images = req.files.images.map((f) => `/uploads/postUploads/${f.filename}`);
+      // If files were uploaded as buffers (memoryStorage), upload them to Cloudinary
+      if (req.files.images && Array.isArray(req.files.images)) {
+        for (const f of req.files.images) {
+          if (f.buffer) {
+            const res = await uploadBuffer(f.buffer, 'dev-connect/posts');
+            images.push(res.secure_url || res.url);
+          } else if (f.path || f.filename) {
+            images.push(`/uploads/postUploads/${f.filename || f.path}`);
+          }
+        }
       } else if (req.files.image && Array.isArray(req.files.image)) {
-        // single file in image field
-        images = req.files.image.map((f) => `/uploads/postUploads/${f.filename}`);
+        for (const f of req.files.image) {
+          if (f.buffer) {
+            const res = await uploadBuffer(f.buffer, 'dev-connect/posts');
+            images.push(res.secure_url || res.url);
+          } else if (f.path || f.filename) {
+            images.push(`/uploads/postUploads/${f.filename || f.path}`);
+          }
+        }
+      } else if (Array.isArray(req.files)) {
+        for (const f of req.files) {
+          if (f.buffer) {
+            const res = await uploadBuffer(f.buffer, 'dev-connect/posts');
+            images.push(res.secure_url || res.url);
+          } else if (f.path || f.filename) {
+            images.push(`/uploads/postUploads/${f.filename || f.path}`);
+          }
+        }
       }
     } else if (req.body.image) {
       // allow comma-separated or single url in body

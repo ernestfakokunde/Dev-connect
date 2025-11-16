@@ -6,11 +6,8 @@ import path from 'path'
 
 const router = express.Router();
 
-// multer storage for story uploads
-const storage = multer.diskStorage({
-	destination: (req, file, cb) => cb(null, 'uploads/storyUploads/'),
-	filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
-});
+// use memoryStorage for Cloudinary uploads
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 router.post("/", protect, upload.single('image'), createStory);

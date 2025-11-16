@@ -6,11 +6,8 @@ import path from 'path'
 
 const router = express.Router();
 
-// multer storage for post uploads
-const storage = multer.diskStorage({
-	destination: (req, file, cb) => cb(null, 'uploads/postUploads/'),
- 	filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
-});
+// multer memory storage for Cloudinary uploads
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // accept multiple images (field name: images) or a single file (field name: image)

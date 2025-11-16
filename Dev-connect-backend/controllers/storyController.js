@@ -1,12 +1,18 @@
 import Story from "../models/storyModel.js";
+import uploadBuffer from '../utils/cloudinaryUpload.js'
 
 // Create story (supports file upload via multer as `req.file`)
 export const createStory = async (req, res) => {
   try {
     const { text } = req.body;
-    let imageUrl = req.body.imageUrl;
+    let imageUrl = req.body.imageUrl || '';
     if (req.file) {
-      imageUrl = `/uploads/storyUploads/${req.file.filename}`;
+      if (req.file.buffer) {
+        const res = await uploadBuffer(req.file.buffer, 'dev-connect/stories');
+        imageUrl = res.secure_url || res.url;
+      } else if (req.file.filename) {
+        imageUrl = `/uploads/storyUploads/${req.file.filename}`;
+      }
     }
 
     const newStory = new Story({
