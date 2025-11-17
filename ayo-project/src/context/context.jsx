@@ -35,7 +35,7 @@ export const GlobalProvider = ({children})=>{
   useEffect(()=>{
     if(token){
       setLoading(true)
-      axiosInstance.get("/users/me",{headers:{Authorization:`Bearer ${token}`}})
+      axiosInstance.get("/api/users/me",{headers:{Authorization:`Bearer ${token}`}})
       .then(res => setUser(normalizeUser(res.data)))
       .catch((err)=>{
         setToken('');
@@ -58,7 +58,7 @@ export const GlobalProvider = ({children})=>{
       localStorage.setItem('token',token)
       
       // Fetch full user profile after login
-      const userRes = await axiosInstance.get("/users/me", {headers: {Authorization: `Bearer ${token}`}});
+      const userRes = await axiosInstance.get("/api/users/me", {headers: {Authorization: `Bearer ${token}`}});
       setUser(normalizeUser(userRes.data));
       
       return true;
@@ -82,7 +82,7 @@ export const GlobalProvider = ({children})=>{
       localStorage.setItem("token", token);
       
       // Fetch full user profile after registration
-      const userRes = await axiosInstance.get("api/users/me", {headers: {Authorization: `Bearer ${token}`}});
+      const userRes = await axiosInstance.get("/api/users/me", {headers: {Authorization: `Bearer ${token}`}});
       setUser(normalizeUser(userRes.data));
       
       return true;
