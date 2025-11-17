@@ -61,7 +61,7 @@ const Feed = () => {
       }
       
       console.log(`Fetching posts page ${pageNum} with token:`, token ? 'Token exists' : 'No token');
-      const response = await axiosInstance.get('/api/posts');
+      const response = await axiosInstance.get('/posts');
       let allPosts = response.data || [];
       
       // Shuffle posts for randomness
@@ -144,7 +144,7 @@ const Feed = () => {
       });
 
       console.log('Creating post with:', { text: postText, imageCount: postImages.length });
-      const response = await axiosInstance.post('/api/posts', formData, {
+      const response = await axiosInstance.post('/posts', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -170,7 +170,7 @@ const Feed = () => {
 
   const handleLike = async (postId) => {
     try {
-      await axiosInstance.patch(`/api/posts/like/${postId}`);
+      await axiosInstance.patch(`/posts/like/${postId}`);
       // Update post likes locally without full refresh
       setPosts((prev) =>
         prev.map((post) =>
@@ -193,7 +193,7 @@ const Feed = () => {
   const handleComment = async (postId, commentText) => {
     if (!commentText.trim()) return;
     try {
-      const response = await axiosInstance.post(`/api/posts/${postId}/comments`, { text: commentText });
+      const response = await axiosInstance.post(`/posts/${postId}/comments`, { text: commentText });
       // Add comment to post locally without full refresh
       setPosts((prev) =>
         prev.map((post) =>

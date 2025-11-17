@@ -3,7 +3,7 @@ import axios from "axios";
 import axiosInstance from "../api/axiosInstance";
 
 // Use axiosInstance from centralized config
-axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 
 const GlobalContext = createContext();
@@ -35,7 +35,7 @@ export const GlobalProvider = ({children})=>{
   useEffect(()=>{
     if(token){
       setLoading(true)
-      axiosInstance.get("/api/users/me",{headers:{Authorization:`Bearer ${token}`}})
+      axiosInstance.get("/users/me",{headers:{Authorization:`Bearer ${token}`}})
       .then(res => setUser(normalizeUser(res.data)))
       .catch((err)=>{
         setToken('');
@@ -52,13 +52,13 @@ export const GlobalProvider = ({children})=>{
   const login = async (email,password)=>{
     setLoading(true)
     try {
-      const res = await axiosInstance.post('/api/users/login', {email,password});
+      const res = await axiosInstance.post('/users/login', {email,password});
       const { token } = res.data;
       setToken(token)
       localStorage.setItem('token',token)
       
       // Fetch full user profile after login
-      const userRes = await axiosInstance.get("/api/users/me", {headers: {Authorization: `Bearer ${token}`}});
+      const userRes = await axiosInstance.get("/users/me", {headers: {Authorization: `Bearer ${token}`}});
       setUser(normalizeUser(userRes.data));
       
       return true;
@@ -76,13 +76,13 @@ export const GlobalProvider = ({children})=>{
    const register = async (formData)=>{
     setLoading(true)
     try {
-      const res = await axiosInstance.post("/api/users/register", formData);
+      const res = await axiosInstance.post("/users/register", formData);
       const { token } = res.data;
       setToken(token);
       localStorage.setItem("token", token);
       
       // Fetch full user profile after registration
-      const userRes = await axiosInstance.get("/api/users/me", {headers: {Authorization: `Bearer ${token}`}});
+      const userRes = await axiosInstance.get("/users/me", {headers: {Authorization: `Bearer ${token}`}});
       setUser(normalizeUser(userRes.data));
       
       return true;
@@ -122,7 +122,7 @@ export const GlobalProvider = ({children})=>{
       data.append("gender", formData.gender || "");
       if(formData.profilePic) data.append("profilePic", formData.profilePic);
 
-      const res = await axiosInstance.patch('/api/users/profile', data, {
+      const res = await axiosInstance.patch('/users/profile', data, {
         headers:{
           'Content-Type': 'multipart/form-data',
         },

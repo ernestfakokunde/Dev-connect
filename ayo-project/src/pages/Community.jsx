@@ -49,7 +49,7 @@ const Community = () => {
       return;
     }
     try {
-      await axiosInstance.post(`/api/projects/join/${projectId}`);
+      await axiosInstance.post(`/projects/join/${projectId}`);
       toast.success("Successfully joined project!");
       fetchProjects(); // Refresh projects
     } catch (error) {
