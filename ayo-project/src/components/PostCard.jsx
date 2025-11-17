@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import formatTime from "../utils/formatTime";
 import { FaHeart, FaComment, FaShare, FaEllipsisH } from "react-icons/fa";
 import { useGlobalContext } from "../context/context";
+import { getImageUrl, FALLBACK_POST_IMAGE, DEFAULT_AVATAR } from "../utils/imageUtils";
 
 export default function PostCard({ post, onLike, onComment, currentUser, token }) {
   const [showComments, setShowComments] = useState(false);
@@ -27,15 +28,6 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
       onComment(commentText);
       setCommentText("");
     }
-  };
-
-  const baseURL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000';
-  const FALLBACK_IMAGE = 'https://via.placeholder.com/800x600?text=Image+Unavailable';
-  const getImageUrl = (img) => {
-    if (!img) return "/default-avatar.svg";
-    if (img.startsWith("http")) return img;
-    if (img.startsWith("/")) return `${baseURL}${img}`;
-    return `${baseURL}/${img}`;
   };
 
   return (
@@ -71,22 +63,27 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
       )}
 
       {/* Post Images */}
-      {post.image && post.image.length > 0 && (
+      {(() => {
+        // Handle both array and string formats for images
+        const images = Array.isArray(post.image) ? post.image : (post.image ? [post.image] : []);
+        if (images.length === 0) return null;
+        
+        return (
         <div className="w-full">
-          {post.image.length === 1 ? (
+          {images.length === 1 ? (
             <img
-              src={getImageUrl(post.image[0])}
+              src={getImageUrl(images[0])}
               alt="Post content"
               className="w-full max-h-96 object-cover cursor-pointer hover:opacity-90"
               onClick={() => {
                 setLightboxOpen(true);
                 setLightboxIndex(0);
               }}
-              onError={(e) => {e.target.src = FALLBACK_IMAGE}}
+              onError={(e) => {e.target.src = FALLBACK_POST_IMAGE}}
             />
           ) : (
             <div className="grid grid-cols-2 gap-1">
-              {post.image.slice(0, 4).map((img, i) => (
+              {images.slice(0, 4).map((img, i) => (
                 <div 
                   key={i} 
                   className="relative cursor-pointer hover:opacity-90"
@@ -99,11 +96,11 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
                     src={getImageUrl(img)}
                     alt={`Post image ${i + 1}`}
                     className="w-full h-48 object-cover"
-                    onError={(e) => {e.target.src = FALLBACK_IMAGE}}
+                    onError={(e) => {e.target.src = FALLBACK_POST_IMAGE}}
                   />
-                  {i === 3 && post.image.length > 4 && (
+                  {i === 3 && images.length > 4 && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white font-bold text-xl">
-                      +{post.image.length - 4}
+                      +{images.length - 4}
                     </div>
                   )}
                 </div>
@@ -111,7 +108,8 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
             </div>
           )}
         </div>
-      )}
+        );
+      })()}
 
       {/* Post Stats Bar */}
       <div className="px-4 py-3 border-t border-gray-200 bg-gray-50">
@@ -172,7 +170,7 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
                     src={getImageUrl(comment.user?.profilePic)}
                     alt={comment.user?.username}
                     className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                    onError={(e) => {e.target.src = '/default-avatar.svg'}}
+                    onError={(e) => {e.target.src = DEFAULT_AVATAR}}
                   />
                   <div className="flex-1 bg-white rounded-lg px-3 py-2 shadow-sm">
                     <div className="font-semibold text-sm text-gray-900">
@@ -214,7 +212,11 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
       )}
 
       {/* Lightbox Modal */}
-      {lightboxOpen && post.image && post.image.length > 0 && (
+      {(() => {
+        const lightboxImages = Array.isArray(post.image) ? post.image : (post.image ? [post.image] : []);
+        if (!lightboxOpen || lightboxImages.length === 0) return null;
+        
+        return (
         <div 
           className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center"
           onClick={() => setLightboxOpen(false)}
@@ -222,10 +224,10 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
           <div className="relative max-w-4xl max-h-screen flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
             {/* Image */}
             <img
-              src={getImageUrl(post.image[lightboxIndex])}
+              src={getImageUrl(lightboxImages[lightboxIndex])}
               alt={`Full view ${lightboxIndex + 1}`}
               className="max-w-full max-h-screen object-contain"
-              onError={(e) => {e.target.src = FALLBACK_IMAGE}}
+              onError={(e) => {e.target.src = FALLBACK_POST_IMAGE}}
             />
 
             {/* Close Button */}
@@ -250,7 +252,7 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
             )}
 
             {/* Next Button */}
-            {lightboxIndex < post.image.length - 1 && (
+            {lightboxIndex < lightboxImages.length - 1 && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -264,11 +266,12 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
 
             {/* Image Counter */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm">
-              {lightboxIndex + 1} / {post.image.length}
+              {lightboxIndex + 1} / {lightboxImages.length}
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

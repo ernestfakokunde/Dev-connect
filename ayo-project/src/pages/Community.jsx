@@ -7,7 +7,7 @@ import ProjectModal from '../components/ProjectModal';
 import axiosInstance from '../api/axiosInstance';
 import { useGlobalContext } from '../context/context';
 import { toast } from 'react-toastify';
-import { getImageUrl } from '../utils/imageUtils';
+import { getImageUrl, DEFAULT_AVATAR, FALLBACK_POST_IMAGE } from '../utils/imageUtils';
 
 const Community = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -120,9 +120,10 @@ const Community = () => {
                 {/* Project Image */}
                 {project.image && (
                   <img
-                    src={getImageUrl(project.image)}
+                    src={getImageUrl(project.image, FALLBACK_POST_IMAGE)}
                     alt={project.projectName}
                     className="w-full h-48 object-cover"
+                    onError={(e) => {e.target.src = FALLBACK_POST_IMAGE}}
                   />
                 )}
 
@@ -146,6 +147,7 @@ const Community = () => {
                       src={getImageUrl(project.owner?.profilePic)}
                       alt={project.owner?.username}
                       className="w-8 h-8 rounded-full object-cover"
+                      onError={(e) => {e.target.src = DEFAULT_AVATAR}}
                     />
                     <div className="text-sm">
                       <p className="text-slate-200 font-medium">{project.owner?.username}</p>

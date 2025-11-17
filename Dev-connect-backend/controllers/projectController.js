@@ -1,6 +1,7 @@
 import projectSchema from "../models/projectModel.js";
 import User from "../models/userModel.js";
-import uploadBuffer from '../utils/cloudinaryUpload.js'
+import uploadBuffer from '../utils/cloudinaryUpload.js';
+import mongoose from 'mongoose';
 
 export const createProject = async (req,res)=>{
   try {

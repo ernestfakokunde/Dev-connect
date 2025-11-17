@@ -38,6 +38,7 @@ router.get("/", protect, getPosts)
 router.patch("/like/:id", protect, likePost)
 // POST /api/posts/like/:id - add comment (note: should be /comment/:id but keeping for compatibility)
 router.post("/like/:id", protect, commentPost)
+router.post("/comments/:id", protect, commentPost)
 // GET /api/posts/user/:userId - get posts by user
 router.get("/user/:id", protect, getUserPost)
 

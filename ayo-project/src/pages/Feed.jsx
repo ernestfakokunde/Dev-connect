@@ -6,6 +6,7 @@ import FacebookNavbar from '../components/FacebookNavbar';
 import PostCard from '../components/PostCard';
 import { FaImage, FaHeart, FaComment, FaShare } from 'react-icons/fa';
 import formatTime from '../utils/formatTime';
+import { getImageUrl, DEFAULT_AVATAR } from '../utils/imageUtils';
 
 const Feed = () => {
   const { user, token } = useGlobalContext();
@@ -232,9 +233,10 @@ const Feed = () => {
             <form onSubmit={handleCreatePost}>
               <div className="flex items-start space-x-3 text-black">
                 <img
-                  src={user.profilePic || '/default-avatar.svg'}
+                  src={getImageUrl(user.profilePic)}
                   alt={user.username}
                   className="w-10 h-10 rounded-full object-cover"
+                  onError={(e) => {e.target.src = DEFAULT_AVATAR}}
                 />
                 <div className="flex-1">
                   <textarea
