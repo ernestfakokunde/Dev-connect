@@ -32,6 +32,14 @@ const Messages = () => {
     return Array.from(map.values());
   };
 
+  const getSocketUrl = () => {
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+    const httpBase = import.meta.env.VITE_SOCKET_URL || apiBase.replace(/\/api$/, '');
+    if (httpBase.startsWith('https://')) return httpBase.replace('https://', 'wss://');
+    if (httpBase.startsWith('http://')) return httpBase.replace('http://', 'ws://');
+    return httpBase;
+  };
+
   useEffect(() => {
     fetchConversations();
     
@@ -44,7 +52,7 @@ const Messages = () => {
     
     // Initialize socket connection
     if (user && token) {
-      socketRef.current = io(import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000', {
+      socketRef.current = io(getSocketUrl(), {
         auth: { token },
       });
 
