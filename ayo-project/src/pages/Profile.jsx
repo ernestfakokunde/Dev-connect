@@ -60,7 +60,7 @@ const Profile = () => {
     }
     try {
       console.log('Fetching posts for user:', userId);
-      const response = await axiosInstance.get(`/posts/user/${userId}`, {
+      const response = await axiosInstance.get(`/api/posts/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log('Posts response:', response.data);

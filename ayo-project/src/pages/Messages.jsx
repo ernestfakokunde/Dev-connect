@@ -89,7 +89,7 @@ const Messages = () => {
 
   const fetchConversations = async () => {
     try {
-      const response = await axiosInstance.get('/messages/conversations', {
+      const response = await axiosInstance.get('/api/messages/conversations', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setConversations(response.data);
@@ -104,7 +104,7 @@ const Messages = () => {
   const fetchUserAndStartConversation = async (userId) => {
     try {
       // Fetch user info from the backend
-      const response = await axiosInstance.get(`/users/profile/${userId}`);
+      const response = await axiosInstance.get(`/api/users/profile/${userId}`);
       if (response.data?.user) {
         setSelectedConversation(response.data.user);
         // Fetch messages with this user
@@ -118,7 +118,7 @@ const Messages = () => {
 
   const fetchMessages = async (otherUserId) => {
     try {
-      const response = await axiosInstance.get(`/messages/${otherUserId}`);
+      const response = await axiosInstance.get(`/api/messages/${otherUserId}`);
       setMessages(dedupeMessages(response.data));
     } catch (error) {
       console.error('Error fetching messages:', error);

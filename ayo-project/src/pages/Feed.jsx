@@ -170,7 +170,7 @@ const Feed = () => {
 
   const handleLike = async (postId) => {
     try {
-      await axiosInstance.patch(`/posts/like/${postId}`);
+      await axiosInstance.patch(`/api/posts/like/${postId}`);
       // Update post likes locally without full refresh
       setPosts((prev) =>
         prev.map((post) =>
@@ -193,7 +193,7 @@ const Feed = () => {
   const handleComment = async (postId, commentText) => {
     if (!commentText.trim()) return;
     try {
-      const response = await axiosInstance.post(`/posts/${postId}/comments`, { text: commentText });
+      const response = await axiosInstance.post(`/api/posts/${postId}/comments`, { text: commentText });
       // Add comment to post locally without full refresh
       setPosts((prev) =>
         prev.map((post) =>
