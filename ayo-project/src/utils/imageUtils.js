@@ -7,9 +7,17 @@
  * - Empty/null values - returns default avatar
  */
 
-export const getImageUrl = (imagePath) => {
+const normalizeBaseUrl = (url) => {
+  if (!url) return '';
+  return url.endsWith('/') ? url.slice(0, -1) : url;
+};
+
+export const DEFAULT_AVATAR = '/default-avatar.svg';
+export const FALLBACK_POST_IMAGE = 'https://via.placeholder.com/800x600?text=Image+Unavailable';
+
+export const getImageUrl = (imagePath, fallback = DEFAULT_AVATAR) => {
   if (!imagePath) {
-    return '/default-avatar.png';
+    return fallback;
   }
 
   // If already a full URL, return as-is
@@ -17,7 +25,7 @@ export const getImageUrl = (imagePath) => {
     return imagePath;
   }
 
-  const baseURL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000';
+  const baseURL = normalizeBaseUrl(import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000');
 
   // If path starts with /, concat directly
   if (typeof imagePath === 'string' && imagePath.startsWith('/')) {
@@ -25,7 +33,8 @@ export const getImageUrl = (imagePath) => {
   }
 
   // Otherwise assume it needs a / prefix
-  return `${baseURL}/${imagePath}`;
+  const cleanedPath = imagePath.replace(/^\/+/, '');
+  return `${baseURL}/${cleanedPath}`;
 };
 
 export default getImageUrl;

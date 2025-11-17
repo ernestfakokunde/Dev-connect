@@ -30,8 +30,9 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
   };
 
   const baseURL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000';
+  const FALLBACK_IMAGE = 'https://via.placeholder.com/800x600?text=Image+Unavailable';
   const getImageUrl = (img) => {
-    if (!img) return "/default-avatar.png";
+    if (!img) return "/default-avatar.svg";
     if (img.startsWith("http")) return img;
     if (img.startsWith("/")) return `${baseURL}${img}`;
     return `${baseURL}/${img}`;
@@ -47,7 +48,7 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
               src={getImageUrl(post.user?.profilePic || post.profilePic)}
               alt={post.user?.username || post.username}
               className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
-              onError={(e) => {e.target.src = '/default-avatar.png'}}
+              onError={(e) => {e.target.src = '/default-avatar.svg'}}
             />
             <div>
               <div className="font-semibold text-gray-900 text-base">
@@ -81,7 +82,7 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
                 setLightboxOpen(true);
                 setLightboxIndex(0);
               }}
-              onError={(e) => {e.target.src = '/default-image.png'}}
+              onError={(e) => {e.target.src = FALLBACK_IMAGE}}
             />
           ) : (
             <div className="grid grid-cols-2 gap-1">
@@ -98,7 +99,7 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
                     src={getImageUrl(img)}
                     alt={`Post image ${i + 1}`}
                     className="w-full h-48 object-cover"
-                    onError={(e) => {e.target.src = '/default-image.png'}}
+                    onError={(e) => {e.target.src = FALLBACK_IMAGE}}
                   />
                   {i === 3 && post.image.length > 4 && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white font-bold text-xl">
@@ -171,7 +172,7 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
                     src={getImageUrl(comment.user?.profilePic)}
                     alt={comment.user?.username}
                     className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                    onError={(e) => {e.target.src = '/default-avatar.png'}}
+                    onError={(e) => {e.target.src = '/default-avatar.svg'}}
                   />
                   <div className="flex-1 bg-white rounded-lg px-3 py-2 shadow-sm">
                     <div className="font-semibold text-sm text-gray-900">
@@ -190,7 +191,7 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
               src={getImageUrl(currentUser?.profilePic)}
               alt={currentUser?.username}
               className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-              onError={(e) => {e.target.src = '/default-avatar.png'}}
+              onError={(e) => {e.target.src = '/default-avatar.svg'}}
             />
             <div className="flex-1 flex items-center bg-white rounded-full border border-gray-200 px-3 py-2">
               <input
@@ -224,7 +225,7 @@ export default function PostCard({ post, onLike, onComment, currentUser, token }
               src={getImageUrl(post.image[lightboxIndex])}
               alt={`Full view ${lightboxIndex + 1}`}
               className="max-w-full max-h-screen object-contain"
-              onError={(e) => {e.target.src = '/default-image.png'}}
+              onError={(e) => {e.target.src = FALLBACK_IMAGE}}
             />
 
             {/* Close Button */}

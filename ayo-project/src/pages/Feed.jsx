@@ -232,7 +232,7 @@ const Feed = () => {
             <form onSubmit={handleCreatePost}>
               <div className="flex items-start space-x-3 text-black">
                 <img
-                  src={user.profilePic || '/default-avatar.png'}
+                  src={user.profilePic || '/default-avatar.svg'}
                   alt={user.username}
                   className="w-10 h-10 rounded-full object-cover"
                 />

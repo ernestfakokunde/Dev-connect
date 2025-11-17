@@ -59,7 +59,7 @@ const Navbar = () => {
                       src={getImageUrl(user.profilePic)}
                       alt={user?.username || 'Profile'}
                       className='w-8 h-8 rounded-full object-cover border border-white/20'
-                      onError={(e) => {e.target.src = '/default-avatar.png'}}
+                      onError={(e) => {e.target.src = '/default-avatar.svg'}}
                     />
                   </Link>
                 )}

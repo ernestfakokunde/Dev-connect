@@ -80,7 +80,7 @@ const FacebookNavbar = () => {
                       src={getImageUrl(user.profilePic)}
                       alt={user.username || 'Profile'}
                       className="w-8 h-8 rounded-full object-cover border-2 border-white"
-                      onError={(e) => {e.target.src = '/default-avatar.png'}}
+                      onError={(e) => {e.target.src = '/default-avatar.svg'}}
                     />
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
