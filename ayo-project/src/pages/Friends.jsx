@@ -31,7 +31,7 @@ const Friends = () => {
 
   const fetchFriendsAndRequests = async () => {
     try {
-      const response = await axiosInstance.get('/friends');
+      const response = await axiosInstance.get('/api/friends');
       setFriends(response.data.friends || []);
       setPendingRequests(response.data.pending || []);
     } catch (error) {
@@ -44,7 +44,7 @@ const Friends = () => {
 
   const fetchSuggestions = async () => {
     try {
-      const response = await axiosInstance.get('/users/all');
+      const response = await axiosInstance.get('/api/users/all');
       // Filter out current user and existing friends
       const friendIds = friends.map(f => {
         const otherUser = getOtherUser(f);
@@ -80,7 +80,7 @@ const Friends = () => {
     }
 
     try {
-      const response = await axiosInstance.get('/users/all');
+      const response = await axiosInstance.get('/api/users/all');
       const filtered = response.data.filter((u) => {
         const name = (u.profileName || u.username || '').toLowerCase();
         return name.includes(q.toLowerCase());
@@ -95,7 +95,7 @@ const Friends = () => {
 
   const handleSendRequest = async (receiverId) => {
     try {
-      await axiosInstance.post('/friends/send', { receiverId });
+      await axiosInstance.post('/api/friends/send', { receiverId });
       toast.success('Friend request sent!');
       fetchFriendsAndRequests();
       fetchSuggestions(); // Refresh suggestions
@@ -115,7 +115,7 @@ const Friends = () => {
 
   const handleRespondToRequest = async (requestId, action) => {
     try {
-      await axiosInstance.post(`/friends/${requestId}/respond`, { action });
+      await axiosInstance.post(`/api/friends/${requestId}/respond`, { action });
       toast.success(`Request ${action}ed!`);
       fetchFriendsAndRequests();
       fetchSuggestions();
@@ -129,7 +129,7 @@ const Friends = () => {
     if (!window.confirm('Are you sure you want to remove this friend?')) return;
     
     try {
-      await axiosInstance.delete(`/friends/remove/${friendId}`);
+      await axiosInstance.delete(`/api/friends/remove/${friendId}`);
       toast.success('Friend removed');
       fetchFriendsAndRequests();
       fetchSuggestions();

@@ -61,7 +61,7 @@ const Feed = () => {
       }
       
       console.log(`Fetching posts page ${pageNum} with token:`, token ? 'Token exists' : 'No token');
-      const response = await axiosInstance.get('/posts');
+      const response = await axiosInstance.get('/api/posts');
       let allPosts = response.data || [];
       
       // Shuffle posts for randomness
@@ -144,7 +144,7 @@ const Feed = () => {
       });
 
       console.log('Creating post with:', { text: postText, imageCount: postImages.length });
-      const response = await axiosInstance.post('/posts', formData, {
+      const response = await axiosInstance.post('/api/posts', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
