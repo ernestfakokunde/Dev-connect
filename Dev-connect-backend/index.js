@@ -26,7 +26,7 @@ const __dirname = path.resolve();
 // ─── MIDDLEWARES ──────────────────────────────────────────────
 // CORS configuration - allow specific origin when credentials are used
 app.use(cors({
-  origin: 'http://localhost:5173', // Frontend URL
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',// Frontend URL
   credentials: true, // Allow cookies/credentials
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -42,7 +42,7 @@ const server = http.createServer(app);
 
 const io = new IOServer(server, {
   cors: { 
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173' ,
     credentials: true
   },
 });
