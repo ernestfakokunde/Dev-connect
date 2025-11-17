@@ -52,7 +52,7 @@ export const GlobalProvider = ({children})=>{
   const login = async (email,password)=>{
     setLoading(true)
     try {
-      const res = await axiosInstance.post('/users/login', {email,password});
+      const res = await axiosInstance.post('/api/users/login', {email,password});
       const { token } = res.data;
       setToken(token)
       localStorage.setItem('token',token)
@@ -76,7 +76,7 @@ export const GlobalProvider = ({children})=>{
    const register = async (formData)=>{
     setLoading(true)
     try {
-      const res = await axiosInstance.post("/users/register", formData);
+      const res = await axiosInstance.post("/api/users/register", formData);
       const { token } = res.data;
       setToken(token);
       localStorage.setItem("token", token);
