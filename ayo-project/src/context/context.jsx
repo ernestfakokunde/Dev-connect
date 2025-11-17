@@ -82,7 +82,7 @@ export const GlobalProvider = ({children})=>{
       localStorage.setItem("token", token);
       
       // Fetch full user profile after registration
-      const userRes = await axiosInstance.get("/users/me", {headers: {Authorization: `Bearer ${token}`}});
+      const userRes = await axiosInstance.get("api/users/me", {headers: {Authorization: `Bearer ${token}`}});
       setUser(normalizeUser(userRes.data));
       
       return true;
@@ -122,7 +122,7 @@ export const GlobalProvider = ({children})=>{
       data.append("gender", formData.gender || "");
       if(formData.profilePic) data.append("profilePic", formData.profilePic);
 
-      const res = await axiosInstance.patch('/users/profile', data, {
+      const res = await axiosInstance.patch('/api/users/profile', data, {
         headers:{
           'Content-Type': 'multipart/form-data',
         },
