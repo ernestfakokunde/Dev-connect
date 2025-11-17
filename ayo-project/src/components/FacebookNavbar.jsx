@@ -1,18 +1,34 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../context/context';
 import { FaHome, FaUserFriends, FaUser } from 'react-icons/fa';
 import { FaMessage } from 'react-icons/fa6';
-import { MdNotificationsNone } from 'react-icons/md';
+import { MdNotificationsNone, MdMoreVert } from 'react-icons/md';
 import { RiUserCommunityLine } from "react-icons/ri";
 import { getImageUrl } from '../utils/imageUtils';
+import { GiThreeFriends } from "react-icons/gi";
 
 const FacebookNavbar = () => {
-  const { user, logout } = useGlobalContext();
+  //hola
+  const { user, logout, register } = useGlobalContext();
   const location = useLocation();
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
   const isActive = (path) => location.pathname === path;
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const navItems = [
     { path: '/feed', icon: FaHome, label: 'Feed' },
@@ -56,6 +72,9 @@ const FacebookNavbar = () => {
             <button onClick={() => navigate('/feed')} className='text-white p-2 rounded hover:bg-white/10' aria-label='Home'>
               <FaHome />
             </button>
+             <button onClick={() => navigate('/friends')} className='text-white p-2 rounded hover:bg-white/10' aria-label='Home'>
+              <GiThreeFriends />
+            </button>
             <button onClick={() => navigate('/messages')} className='text-white p-2 rounded hover:bg-white/10' aria-label='Messages'>
               <FaMessage />
             </button>
@@ -65,6 +84,24 @@ const FacebookNavbar = () => {
             <button onClick={() => navigate('/profile')} className='text-white p-2 rounded hover:bg-white/10' aria-label='Profile'>
               <FaUser />
             </button>
+            
+            {/* Three-dot menu */}
+            <div className="relative" ref={menuRef}>
+              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className='text-white p-2 rounded hover:bg-white/10' aria-label='More options'>
+                <MdMoreVert className="text-xl" />
+              </button>
+              {isMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-[#0e2f55] rounded-md shadow-lg py-1 z-50 border border-white/20">
+                  <Link
+                    to="/"
+                    className="block px-4 py-2 text-sm text-white hover:bg-[#191f5f]"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Go to Explore
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* User Profile & actions for md+ */}
@@ -95,7 +132,7 @@ const FacebookNavbar = () => {
                 >
                   Logout
                 </button>
-                <Link to={"/"} className='text-1xl font-mono'>
+                <Link to={"/"} className='text-1xl font-mono hidden lg:flex'>
                   Go to Explore
                 </Link>
               </>
