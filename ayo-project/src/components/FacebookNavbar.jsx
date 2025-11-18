@@ -78,9 +78,6 @@ const FacebookNavbar = () => {
             <button onClick={() => navigate('/messages')} className='text-white p-2 rounded hover:bg-white/10' aria-label='Messages'>
               <FaMessage />
             </button>
-            <button onClick={() => navigate('/community')} className='text-white p-2 rounded hover:bg-white/10' aria-label='Notifications'>
-               <RiUserCommunityLine />
-            </button>
             <button onClick={() => navigate('/profile')} className='text-white p-2 rounded hover:bg-white/10' aria-label='Profile'>
               <FaUser />
             </button>

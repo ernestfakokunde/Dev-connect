@@ -56,7 +56,7 @@ const ProfileSetup = () => {
       toast.success('Profile setup completed successfully! 🎉');
       // Navigate to feed after successful profile setup
       setTimeout(() => {
-        navigate('/feed');
+        navigate('/');
       }, 1000);
     } catch (error) {
       console.error('Profile setup error:', error);
