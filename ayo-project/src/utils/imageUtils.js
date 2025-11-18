@@ -16,8 +16,8 @@ const normalizePath = (value) => {
   if (typeof value !== 'string') return value;
   // replace Windows backslashes with forward slashes
   const withForwardSlashes = value.replace(/\\/g, '/');
-  // collapse duplicate slashes
-  return withForwardSlashes.replace(/\/{2,}/g, '/');
+  // collapse duplicate slashes while keeping protocol markers intact
+  return withForwardSlashes.replace(/([^:])\/{2,}/g, '$1/');
 };
 
 export const DEFAULT_AVATAR = '/default-avatar.svg';
@@ -37,21 +37,29 @@ export const getImageUrl = (imagePath, fallback = DEFAULT_AVATAR) => {
     pathToProcess = String(pathToProcess);
   }
 
+  // Trim whitespace for more robust matching
+  pathToProcess = pathToProcess.trim();
+
   // Check if empty after trimming
-  if (pathToProcess.trim() === '') {
+  if (pathToProcess === '') {
     return fallback;
+  }
+
+  // If already a full URL (http:// or https://), or data/blob URL, return as-is
+  if (/^(https?:)?\/\//i.test(pathToProcess) || /^(data|blob):/i.test(pathToProcess)) {
+    return pathToProcess;
   }
 
   const normalizedPath = normalizePath(pathToProcess);
 
-  // If already a full URL (http:// or https://), return as-is
-  if (/^https?:\/\//i.test(normalizedPath)) {
-    return normalizedPath;
-  }
-
   // Get base URL from environment variable
   const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
   const baseURL = normalizeBaseUrl(apiBase.replace('/api', ''));
+
+  // If path starts with // (protocol-relative), add https:
+  if (normalizedPath.startsWith('//')) {
+    return `https:${normalizedPath}`;
+  }
 
   // If path starts with /, prepend base URL
   if (normalizedPath.startsWith('/')) {
