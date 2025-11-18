@@ -6,10 +6,11 @@ import { useSearchParams } from 'react-router-dom';
 import FacebookNavbar from '../components/FacebookNavbar';
 import { FaPaperPlane, FaImage } from 'react-icons/fa';
 import formatTime from '../utils/formatTime';
-import { io } from 'socket.io-client';
+import { useSocket } from '../context/SocketContext'; // Import useSocket
 
 const Messages = () => {
   const { user, token } = useGlobalContext();
+  const { socket } = useSocket(); // Get socket from context
   // robust current user id (handles both `_id` and `id` shapes)
   const myId = user?._id || user?.id || user?.userId || null;
   const [searchParams] = useSearchParams();
@@ -20,7 +21,6 @@ const Messages = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef(null);
-  const socketRef = useRef(null);
 
   // Helper to deduplicate messages by unique id (fallback to composite key)
   const dedupeMessages = (arr) => {
@@ -32,14 +32,6 @@ const Messages = () => {
     return Array.from(map.values());
   };
 
-  const getSocketUrl = () => {
-    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-    const httpBase = import.meta.env.VITE_SOCKET_URL || apiBase.replace(/\/api$/, '');
-    if (httpBase.startsWith('https://')) return httpBase.replace('https://', 'wss://');
-    if (httpBase.startsWith('http://')) return httpBase.replace('http://', 'ws://');
-    return httpBase;
-  };
-
   useEffect(() => {
     fetchConversations();
     
@@ -49,41 +41,31 @@ const Messages = () => {
       // Fetch user info and set as selected conversation
       fetchUserAndStartConversation(userId);
     }
-    
-    // Initialize socket connection
-    if (user && token) {
-      socketRef.current = io(getSocketUrl(), {
-        auth: { token },
-      });
+  }, []);
 
-      socketRef.current.on('connect', () => {
-        const userId = user._id || user.id;
-        if (userId) {
-          socketRef.current.emit('join', userId.toString());
-        }
-      });
+  useEffect(() => {
+    if (!socket) return;
 
-      socketRef.current.on('newMessage', (message) => {
-        const senderId = message.sender?._id || message.sender;
-        const receiverId = message.receiver?._id || message.receiver;
-        const selectedId = selectedConversation?._id || selectedConversation?.id;
+    const handleNewMessage = (message) => {
+      const senderId = message.sender?._id || message.sender;
+      const receiverId = message.receiver?._id || message.receiver;
+      const selectedId = selectedConversation?._id || selectedConversation?.id;
 
-        if (
-          senderId?.toString() === selectedId?.toString() ||
-          receiverId?.toString() === selectedId?.toString()
-        ) {
-          setMessages((prev) => dedupeMessages([...prev, message]));
-        }
-        fetchConversations(); // Refresh conversations list
-      });
+      if (
+        senderId?.toString() === selectedId?.toString() ||
+        receiverId?.toString() === selectedId?.toString()
+      ) {
+        setMessages((prev) => dedupeMessages([...prev, message]));
+      }
+      fetchConversations(); // Refresh conversations list
+    };
 
-      return () => {
-        if (socketRef.current) {
-          socketRef.current.disconnect();
-        }
-      };
-    }
-  }, [user, token]);
+    socket.on('newMessage', handleNewMessage);
+
+    return () => {
+      socket.off('newMessage', handleNewMessage);
+    };
+  }, [socket, selectedConversation]);
 
   useEffect(() => {
     if (selectedConversation) {
