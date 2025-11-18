@@ -16,7 +16,7 @@ export const GlobalProvider = ({ children }) => {
     const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
     const profilePic = rawUser.profilePic;
 
-    if (profilePic && typeof profilePic === 'string' && profilePic.startsWith('/')) {
+    if (profilePic && typeof profilePic === 'string' && !profilePic.startsWith('http') && profilePic.startsWith('/')) {
       const domainUrl = baseURL.replace('/api', '');
       return { ...rawUser, profilePic: `${domainUrl}${profilePic}` };
     }
