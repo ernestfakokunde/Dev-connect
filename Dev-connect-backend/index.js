@@ -25,12 +25,7 @@ const __dirname = path.resolve();
 
 // ─── MIDDLEWARES ──────────────────────────────────────────────
 // CORS configuration - allow specific origin when credentials are used
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',// Frontend URL
-  credentials: true, // Allow cookies/credentials
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -42,7 +37,7 @@ const server = http.createServer(app);
 
 const io = new IOServer(server, {
   cors: { 
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173' ,
+    origin: [process.env.FRONTEND_URL || 'http://localhost:5173' , 'https://dev-connect-three-ebon.vercel.app'], 
     credentials: true
   },
 });
