@@ -62,7 +62,7 @@ router.patch("/profile", protect, upload.single("profilePic"), async(req,res)=>{
             if (error) return reject(error);
             resolve(result);
           });
-          streamifier.createReadStream(buffer).pipe(stream);
+          streamifier.createReadStream(buffer).pipe(stream).on('error', reject);
         });
 
         // Store the secure URL returned by Cloudinary
