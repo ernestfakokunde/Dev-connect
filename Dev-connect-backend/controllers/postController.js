@@ -18,32 +18,20 @@ export const createPost = async(req,res)=>{
 
     // multer.fields() stores files in req.files as object with arrays
     if (req.files) {
+      // Consolidate all uploaded files from different fields (e.g., 'image', 'images') into one array
+      const allFiles = Object.values(req.files).flat();
+
       // If files were uploaded as buffers (memoryStorage), upload them to Cloudinary
-      if (req.files.images && Array.isArray(req.files.images)) {
-        for (const f of req.files.images) {
-          if (f.buffer) {
+      for (const f of allFiles) {
+        if (f.buffer) {
+          try {
             const res = await uploadBuffer(f.buffer, 'dev-connect/posts');
-            images.push(res.secure_url || res.url);
-          } else if (f.path || f.filename) {
-            images.push(`/uploads/postUploads/${f.filename || f.path}`);
-          }
-        }
-      } else if (req.files.image && Array.isArray(req.files.image)) {
-        for (const f of req.files.image) {
-          if (f.buffer) {
-            const res = await uploadBuffer(f.buffer, 'dev-connect/posts');
-            images.push(res.secure_url || res.url);
-          } else if (f.path || f.filename) {
-            images.push(`/uploads/postUploads/${f.filename || f.path}`);
-          }
-        }
-      } else if (Array.isArray(req.files)) {
-        for (const f of req.files) {
-          if (f.buffer) {
-            const res = await uploadBuffer(f.buffer, 'dev-connect/posts');
-            images.push(res.secure_url || res.url);
-          } else if (f.path || f.filename) {
-            images.push(`/uploads/postUploads/${f.filename || f.path}`);
+            if (res && (res.secure_url || res.url)) {
+              images.push(res.secure_url || res.url);
+            }
+          } catch (uploadError) {
+            console.error('Cloudinary upload failed for one file:', uploadError);
+            // Optionally, decide if you want to stop or continue if one file fails
           }
         }
       }
