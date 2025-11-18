@@ -25,7 +25,10 @@ const __dirname = path.resolve();
 
 // ─── MIDDLEWARES ──────────────────────────────────────────────
 // CORS configuration - allow specific origin when credentials are used
-app.use(cors());
+app.use(cors({
+  origin: [process.env.FRONTEND_URL || 'http://localhost:5173', 'https://dev-connect-three-ebon.vercel.app'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
